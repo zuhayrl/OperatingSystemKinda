@@ -74,6 +74,11 @@ public class tree {
             return this.contents.remove(node);
         }
 
+        //remove all subContents
+        public void removeSubContents(){
+            this.contents.clear();
+        }
+
         //print contents
         public void printContents(){
             for (int i = 0;i < contents.size();i++){

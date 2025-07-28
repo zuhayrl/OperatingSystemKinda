@@ -19,8 +19,17 @@ This is a basic operating system simulation that runs in your terminal. It's got
 - `touch <name>` - create an empty file
 - `nano <name> <data>` - create a file with some data
 - `cat <file>` - show what's inside a file
-- `rm` - delete stuff (still working on this one)
+- `rm <file>` - delete files only (Unix behavior: fails on directories)
+- `rm -r <folder>` - delete a folder and all its contents recursively (to be added)
+- `rmdir <folder>` - delete empty directories only (Unix behavior: fails if not empty)
 - `exit` - quit the program
+
+### Unix-style Command Behavior
+The commands follow Unix conventions:
+- `rm` only removes files, not directories (will show error if you try to remove a folder)
+- `rmdir` only removes empty directories (will fail if directory contains files/folders)
+- For recursive deletion, you'd need `rm -r` (not implemented yet but could be added later)
+- This prevents accidental deletion of important folders and their contents
 
 # Structure
 ## Nodes

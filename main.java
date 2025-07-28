@@ -37,7 +37,7 @@ public class main {
         
         // Create the tree system and set up initial directory structure
         tree treeSystem = new tree();
-        tree.Folder root = treeSystem.new Folder("root");
+        tree.Folder root = treeSystem.new Folder("cd");
         currentFolder = root; // Use the static field instead of creating a local variable
         
         // Main OS loop
@@ -49,8 +49,6 @@ public class main {
                 commandCheck(input, treeSystem, root);
             }
         }
-
-
 
     }
 
@@ -70,7 +68,7 @@ public class main {
                 System.out.println("mkdir <name> - Create a new folder");
                 System.out.println("nano <file> <data> - Create a file with data");
                 System.out.println("touch <file> - Create an empty file");
-                //System.out.println("rm <file/folder> - Remove a file or folder");
+                System.out.println("rm <file/folder> - Remove a file or folder");
                 System.out.println("exit      - Exit the OS");
                 break;
             
@@ -198,12 +196,33 @@ public class main {
                         if (file.getName().equals(strings.get(1))) {
                             exists2 = true;
                             currentFolder.removeContents(file);
+                            System.out.println("Removed folder");
                             break;
                         }
                     }
                 }
                 if (!exists2){
                     System.out.println("File not found.");
+                }
+                break;
+
+            case "rmdir": //remove EMPTY directories
+                //code for remove
+                // remove file
+                boolean exists3 = false;
+                List<tree.Node> contents3 = currentFolder.getContents();
+                for (int i=0; i<contents3.size(); i++){
+                    if (contents3.get(i) instanceof tree.Folder) { // check if folder is in folder
+                        tree.Folder folder = (tree.Folder) contents3.get(i);
+                        if (folder.getName().equals(strings.get(1)) && folder.getContents().isEmpty()) {
+                            exists3 = true;
+                            currentFolder.removeContents(folder);
+                            break;
+                        }
+                    }
+                }
+                if (!exists3){
+                    System.out.println("Can't delete folder.");
                 }
                 break;
 
