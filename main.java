@@ -59,6 +59,20 @@ public class main {
         List<String> strings = Arrays.asList(line.split(" "));
         String command = strings.get(0);
         switch (command) {
+            case "help":
+                System.out.println("Available commands:");
+                System.out.println("help      - Show this help message");
+                System.out.println("ls        - List folder contents");
+                System.out.println("cd <dir>  - Change directory");
+                System.out.println("cat <file>- Print file contents");
+                System.out.println("pwd       - Print working directory");
+                System.out.println("mkdir <name> - Create a new folder");
+                System.out.println("nano <file> <data> - Create a file with data");
+                System.out.println("touch <file> - Create an empty file");
+                //System.out.println("rm <file/folder> - Remove a file or folder");
+                System.out.println("exit      - Exit the OS");
+                break;
+            
             case "ls":
                 // ls code
                 currentFolder.printContents();
@@ -193,6 +207,10 @@ public class main {
                 System.out.println("Goodbye :)");
                 running = false;
                 break;
+
+                default:
+                    System.out.println("Invalid command. Type 'help' for a list of commands.");
+                    break;
         }
     }
 }
