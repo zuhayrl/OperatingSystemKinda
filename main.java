@@ -40,7 +40,7 @@ public class main {
             String input = kb.nextLine().trim();
             
             if (!input.isEmpty()) {
-                commandCheck(input, currentFolder, treeSystem);
+                commandCheck(input, currentFolder, treeSystem, root);
             }
         }
 
@@ -49,7 +49,7 @@ public class main {
     }
 
     //functions for each command
-    public static void commandCheck(String line, tree.Folder currentFolder, tree treeSystem){
+    public static void commandCheck(String line, tree.Folder currentFolder, tree treeSystem, tree.Folder root){
         List<String> strings = Arrays.asList(line.split(" "));
         String command = strings.get(0);
         switch (command) {
@@ -60,8 +60,52 @@ public class main {
         
             case "cd":
                 // cd code
-                //String directory = strings.get(1);
-                System.out.println("In progress");
+                String path = strings.get(1); //since it could be a path
+                System.out.println(path);
+                
+                //check if ~ or ..
+                if (path.equals("~")){
+                    currentFolder = root;
+                    break;
+                }
+                if (path.equals("..")){
+                    currentFolder = currentFolder.getParent(); // TODO: add try except for root or smth similar
+                    break;
+                }
+                
+                //check for leading \ or /
+                if (path.charAt(0) == '/'){
+                    path = path.substring(1);
+                }
+
+                List<String> directories = Arrays.asList(path.split("[/\\\\]+"));
+                System.out.println(directories);
+
+                //loop to move into directory
+                for (int i=0; i<directories.size();i++){
+                    
+                    try {//try and move into child i.e. first directory in path
+                        List<tree.Node> contents = currentFolder.getContents(); //get all subfolders of current folder
+                        boolean found = false;
+                        for (tree.Node node : contents) {
+                            if (node instanceof tree.Folder && node.getName().equals(directories.get(i))) {
+                                currentFolder = (tree.Folder) node;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            System.out.println("Directory '" + directories.get(i) + "' not found.");
+                            break;
+                        }
+                    
+                    } catch (Exception e) {
+                        // handle exception
+                        System.out.println("Path does not exist");
+                    }
+                }
+
+                
                 break;
 
             case "cat":
@@ -103,7 +147,7 @@ public class main {
 
             case "nano":
                 //create file
-                if (strings.size() > 1) {
+                if (strings.size() > 2) {
                     String newFileName = strings.get(1);
                     String newFileData = strings.get(2);
                     tree.File newFile = treeSystem.new File(newFileName, newFileData);
@@ -111,6 +155,22 @@ public class main {
                     System.out.println("Folder '" + newFileName + "' created.");
                 } else {
                     System.out.println("Usage: nano <filename> <data>");
+                }
+                break;
+
+                case "rm":
+
+                break;
+
+                case "touch":
+                //create file
+                if (strings.size() > 1) {
+                    String newFileName = strings.get(1);
+                    tree.File newFile = treeSystem.new File(newFileName);
+                    currentFolder.addContents(newFile);
+                    System.out.println("Folder '" + newFileName + "' created.");
+                } else {
+                    System.out.println("Usage: touch <filename>");
                 }
                 break;
 
