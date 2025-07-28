@@ -4,6 +4,12 @@ public class main {
     
     static Scanner kb = new Scanner(System.in);
     static boolean running = true;
+    static tree.Folder currentFolder; // Make currentFolder static so it can be updated by functions
+    
+    // Function to update the current folder
+    public static void updateCurrent(tree.Folder newFolder) {
+        currentFolder = newFolder;
+    }
 
     public static void main(String[] args) {
 
@@ -32,7 +38,7 @@ public class main {
         // Create the tree system and set up initial directory structure
         tree treeSystem = new tree();
         tree.Folder root = treeSystem.new Folder("root");
-        tree.Folder currentFolder = root;
+        currentFolder = root; // Use the static field instead of creating a local variable
         
         // Main OS loop
         while (running) {
@@ -40,7 +46,7 @@ public class main {
             String input = kb.nextLine().trim();
             
             if (!input.isEmpty()) {
-                commandCheck(input, currentFolder, treeSystem, root);
+                commandCheck(input, treeSystem, root);
             }
         }
 
@@ -49,7 +55,7 @@ public class main {
     }
 
     //functions for each command
-    public static void commandCheck(String line, tree.Folder currentFolder, tree treeSystem, tree.Folder root){
+    public static void commandCheck(String line, tree treeSystem, tree.Folder root){
         List<String> strings = Arrays.asList(line.split(" "));
         String command = strings.get(0);
         switch (command) {
@@ -61,35 +67,42 @@ public class main {
             case "cd":
                 // cd code
                 String path = strings.get(1); //since it could be a path
-                System.out.println(path);
+                //System.out.println(path);
                 
                 //check if ~ or ..
                 if (path.equals("~")){
-                    currentFolder = root;
+                    updateCurrent(root);
                     break;
                 }
                 if (path.equals("..")){
-                    currentFolder = currentFolder.getParent(); // TODO: add try except for root or smth similar
-                    break;
+                    if (!currentFolder.equals(root)){    
+                        updateCurrent(currentFolder.getParent());
+                        break;
+                    }
+                    else{System.out.println("root has no parent");break;}
                 }
                 
                 //check for leading \ or /
-                if (path.charAt(0) == '/'){
+                if (path.charAt(0) == '/' || path.charAt(0) == '\\'){
                     path = path.substring(1);
+                }
+                if (path.charAt(path.length()-1) == '/' || path.charAt(0) == '\\'){
+                    path = path.substring(0,path.length()-1);
                 }
 
                 List<String> directories = Arrays.asList(path.split("[/\\\\]+"));
-                System.out.println(directories);
+                //System.out.println(directories);
 
                 //loop to move into directory
                 for (int i=0; i<directories.size();i++){
                     
                     try {//try and move into child i.e. first directory in path
                         List<tree.Node> contents = currentFolder.getContents(); //get all subfolders of current folder
+                        //System.out.println(contents.get(i).getName());
                         boolean found = false;
                         for (tree.Node node : contents) {
                             if (node instanceof tree.Folder && node.getName().equals(directories.get(i))) {
-                                currentFolder = (tree.Folder) node;
+                                updateCurrent((tree.Folder) node);
                                 found = true;
                                 break;
                             }
@@ -102,6 +115,7 @@ public class main {
                     } catch (Exception e) {
                         // handle exception
                         System.out.println("Path does not exist");
+                        break;
                     }
                 }
 
