@@ -58,6 +58,7 @@ public class main {
     public static void commandCheck(String line, tree treeSystem, tree.Folder root){
         List<String> strings = Arrays.asList(line.split(" "));
         String command = strings.get(0);
+        
         switch (command) {
             case "help":
                 System.out.println("Available commands:");
@@ -138,20 +139,20 @@ public class main {
 
             case "cat":
                 // cat code
-                boolean exists = false;
-                List<tree.Node> contents = currentFolder.getContents();
-                for (int i=0; i<contents.size(); i++){
-                    if (contents.get(i) instanceof tree.File) { // check if file is in folder
-                        tree.File file = (tree.File) contents.get(i);
+                boolean exists1 = false;
+                List<tree.Node> contents1 = currentFolder.getContents();
+                for (int i=0; i<contents1.size(); i++){
+                    if (contents1.get(i) instanceof tree.File) { // check if file is in folder
+                        tree.File file = (tree.File) contents1.get(i);
                         if (file.getName().equals(strings.get(1))) {
-                            exists = true;
+                            exists1 = true;
                             System.out.println(file.getData());
                             break;
                         }
                     }
                 }
 
-                if (!exists){
+                if (!exists1){
                     System.out.println("File not found.");
                 }
                 break;
@@ -186,11 +187,27 @@ public class main {
                 }
                 break;
 
-                case "rm":
-
+            case "rm":
+                //code for remove
+                // remove file
+                boolean exists2 = false;
+                List<tree.Node> contents2 = currentFolder.getContents();
+                for (int i=0; i<contents2.size(); i++){
+                    if (contents2.get(i) instanceof tree.File) { // check if file is in folder
+                        tree.File file = (tree.File) contents2.get(i);
+                        if (file.getName().equals(strings.get(1))) {
+                            exists2 = true;
+                            currentFolder.removeContents(file);
+                            break;
+                        }
+                    }
+                }
+                if (!exists2){
+                    System.out.println("File not found.");
+                }
                 break;
 
-                case "touch":
+            case "touch":
                 //create file
                 if (strings.size() > 1) {
                     String newFileName = strings.get(1);
@@ -202,15 +219,15 @@ public class main {
                 }
                 break;
 
-                case "exit":
+            case "exit":
                 // exit code
                 System.out.println("Goodbye :)");
                 running = false;
                 break;
 
-                default:
-                    System.out.println("Invalid command. Type 'help' for a list of commands.");
-                    break;
+            default:
+                System.out.println("Invalid command. Type 'help' for a list of commands.");
+                break;
         }
     }
 }
